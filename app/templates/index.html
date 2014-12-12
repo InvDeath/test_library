@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<aside>
+	<ul>
+{% for book in books %}
+		<li><a href="/author/{{ book.author.id }}">{{ book.author.name }}</a> - <a href="/book/{{ book.id }}">{{ book.title }}</a></li>
+{% endfor %}
+	</ul>
+</aside>
+{% endblock %}
