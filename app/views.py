@@ -1,8 +1,9 @@
-from flask import render_template
+from flask import render_template, flash, redirect
 from app import app
+from .forms import LoginForm
+
 
 @app.route('/')
-@app.route('/index')
 def index():
 	books = [
 		{
@@ -34,3 +35,16 @@ def index():
 		},
 	]
 	return render_template('index.html', books=books)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+	form = LoginForm()
+	if form.validate_on_submit():
+		flash('You were signed in')
+		return redirect('/')
+
+	context = {
+		'form': form,
+		'providers': app.config['OPENID_PROVIDERS']
+	}
+	return render_template('login.html', **context)
