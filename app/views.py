@@ -44,7 +44,6 @@ def login():
 		return redirect('/')
 
 	context = {
-		'form': form,
-		'providers': app.config['OPENID_PROVIDERS']
+		'form': form
 	}
 	return render_template('login.html', **context)
