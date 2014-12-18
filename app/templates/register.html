@@ -1,0 +1,35 @@
+{% extends 'layout.html' %} {% block content %}
+<h1>Registration</h1>
+<form action="" method="post" name="register">
+    {{ form.hidden_tag() }}
+    <p>
+        Login:
+        <br> {{ form.login(size=80) }} 
+        {% for error in form.login.errors %}
+        	<span style="color: red;">{{ error }}</span> 
+        {% endfor %}
+        <br>
+        Password:
+        <br> {{ form.password(size=80) }} 
+        {% for error in form.password.errors %}
+        	<span style="color: red;">{{ error }}</span> 
+        {% endfor %}
+        <br>
+        Password repeat:
+        <br> {{ form.password_repeat(size=80) }} 
+        {% for error in form.password_repeat.errors %}
+            <span style="color: red;">{{ error }}</span> 
+        {% endfor %}
+        <br>
+        Email:
+        <br> {{ form.email(size=80) }} 
+        {% for error in form.email.errors %}
+            <span style="color: red;">{{ error }}</span> 
+        {% endfor %}
+        <br>
+    </p>
+    <p>
+        <input type="submit" value="Sign up">
+    </p>
+</form>
+{% endblock %}
