@@ -1,5 +1,5 @@
 from flask import render_template, flash, redirect, url_for, g, session, request
-from flask.ext.login import login_user, logout_user
+from flask.ext.login import login_user, logout_user, current_user
 from app import app, lm, db
 from .forms import LoginForm, RegisterForm
 from .models import User
@@ -41,21 +41,22 @@ def index():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method == 'GET':
-        return render_template('register.html', form=RegisterForm())
+    form = RegisterForm()
+    if request.method == 'GET' or not form.validate_on_submit():
+        return render_template('register.html', form=form)
 
     user = User(
         request.form['login'], request.form['password'], request.form['email'])
     db.session.add(user)
     db.session.commit()
-    flash('User sucsessfully registred')
+    flash('User sucsessfully registred', 'success')
     return redirect(url_for('login'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    if request.method == 'GET':
+    if request.method == 'GET' or not form.validate_on_submit():
         return render_template('login.html', form=form)
 
     login = request.form['login']
@@ -69,7 +70,7 @@ def login():
         return redirect(url_for('login'))
 
     login_user(registred_user)
-    flash('You were signed in')
+    flash('You were signed in', 'success')
     return redirect('/')
 
 
@@ -82,3 +83,8 @@ def logout():
 @lm.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+@app.before_request
+def before_request():
+    g.user = current_user
+

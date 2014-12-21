@@ -44,7 +44,7 @@ class User(db.Model):
         return '<User: {}>'.format(self.name)
 
     def is_authenticated(self):
-        return False
+        return True
 
     def is_active(self):
         return True

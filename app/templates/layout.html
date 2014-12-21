@@ -12,12 +12,18 @@
             <li>
             	<a href="/">Home</a>
             </li>
+            {% if not g.user.is_authenticated() %}
             <li>
             	<a href="/login">Login</a>
             </li>
             <li>
             	<a href="/register">Registration</a>
             </li>
+			{% else %}
+            <li>
+            	<a href="/logout">LogOut</a>
+            </li>
+            {% endif %}
         </ul>
     </section>
 </nav>
