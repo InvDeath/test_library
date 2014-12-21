@@ -1,35 +1,34 @@
-{% extends 'layout.html' %} {% block content %}
-<h1>Registration</h1>
-<form action="" method="post" name="register">
-    {{ form.hidden_tag() }}
-    <p>
-        Login:
-        <br> {{ form.login(size=80) }} 
+{% extends 'layout.html' %} 
+
+{% block content %}
+
+<div class="row">
+    <h1>Registration</h1>
+
+    <form action="" method="post" name="register">
+        {{ form.hidden_tag() }}
+
+        <label>Login</label>
+        {{ form.login(size=80) }}
         {% for error in form.login.errors %}
-        	<span style="color: red;">{{ error }}</span> 
+            <small class="error">{{ error }}</small>
         {% endfor %}
-        <br>
-        Password:
-        <br> {{ form.password(size=80) }} 
+        <label>Password:</label>
+        {{ form.password(size=80) }}
         {% for error in form.password.errors %}
-        	<span style="color: red;">{{ error }}</span> 
+            <small class="error">{{ error }}</small>
         {% endfor %}
-        <br>
-        Password repeat:
-        <br> {{ form.password_repeat(size=80) }} 
+        <label>Password repeat:</label>
+        {{ form.password_repeat(size=80) }}
         {% for error in form.password_repeat.errors %}
-            <span style="color: red;">{{ error }}</span> 
+            <small class="error">{{ error }}</small>
         {% endfor %}
-        <br>
-        Email:
-        <br> {{ form.email(size=80) }} 
+        <label>Email:</label>
+        {{ form.email(size=80) }}
         {% for error in form.email.errors %}
-            <span style="color: red;">{{ error }}</span> 
+            <small class="error">{{ error }}</small>
         {% endfor %}
-        <br>
-    </p>
-    <p>
-        <input type="submit" value="Sign up">
-    </p>
-</form>
+        <button class="submit">Sign Up</button>
+    </form>
+</div>
 {% endblock %}

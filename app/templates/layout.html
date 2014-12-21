@@ -1,26 +1,40 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} 
 
 {% block body %}
-	<header>
-		<h1>Library</h1>
-		<nav>
-			<ul>
-				<li><a href="/">Home</a></li>
-				<li><a href="/authors">Authors</a></li>
-				<li><a href="/login">Login</a></li>
-			</ul>
-		</nav>
-	</header>
-	{% with messages=get_flashed_messages() %}
+<nav class="top-bar" data-topbar role="navigation">
+    <ul class="title-area">
+        <li class="name">
+            <h1><a href="#">Library</a></h1>
+        </li>
+    </ul>
+    <section class="top-bar-section">
+        <ul class="right">
+            <li>
+            	<a href="/">Home</a>
+            </li>
+            <li>
+            	<a href="/login">Login</a>
+            </li>
+            <li>
+            	<a href="/register">Registration</a>
+            </li>
+        </ul>
+    </section>
+</nav>
+
+	{% with messages=get_flashed_messages(with_categories=True) %}
 		{% if messages %}
-			<ul>
-			{% for message in messages %}
-				<li>{{ message }}</li>
-			{% endfor %}
-			</ul>
+		<br>
+	<section class="row">
+	    {% for category, message in messages %}
+	    <div data-alert class="alert-box {{ category }} radius">
+	        {{ message }}
+	        <a href="#" class="close">&times;</a>
+	    </div>
+	    {% endfor %} 
+	</section>
 		{% endif %}
 	{% endwith %}
-	{% block content %}
-	MAIN CONTENT
-	{% endblock %}
+	
+	{% block content %} MAIN CONTENT {% endblock %} 
 {% endblock %}

@@ -65,7 +65,7 @@ def login():
         login=login, password=password).first()
 
     if registred_user is None:
-        flash('Incorrect login or password')
+        flash('Incorrect login or password', 'alert')
         return redirect(url_for('login'))
 
     login_user(registred_user)

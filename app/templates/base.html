@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<title>Library</title>
+    <title>Library</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/foundation.min.css') }}" />
 </head>
+
 <body>
-	{% block body %} 
-		MAIN BODY
-	{% endblock %}
+    {% block body %} MAIN BODY {% endblock %}
+
+    <script src="{{ url_for('static', filename='js/vendor/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/vendor/modernizr.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/foundation.min.js') }}"></script>
+    <script>
+    $(document).foundation();
+    </script>
 </body>
+
 </html>
