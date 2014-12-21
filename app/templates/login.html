@@ -1,0 +1,21 @@
+{% extends 'layout.html' %} 
+
+{% block content %}
+<div class="row">
+    <h1>Sign In</h1>
+    <form action="" method="post" name="login">
+        {{ form.hidden_tag() }}
+        <label>Login:</label>
+        {{ form.login(size=80) }}
+        {% for error in form.login.errors %}
+            <small class="error">{{ error }}</small>
+        {% endfor %}
+        <label>Password:</label>
+        {{ form.password(size=80) }}
+        {% for error in form.password.errors %}
+            <small class="error">{{ error }}</small>
+        {% endfor %}
+        <button class="submit">Login</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="row">
+	<ul class="no-bullet">
+	{% for book in books %}
+		<li>
+			<h3>
+			<a href="/book/{{ book.id }}">{{ book.title }}</a>
+			</h3>
+			<p>Lorem ipsum dolor sit amet.</p>
+			Author: <a href="/author/{{ book.author.id }}">
+			{{ book.author.name }}
+			</a>
+		</li>
+	{% endfor %}
+	</ul>
+</div>
+{% endblock %}
