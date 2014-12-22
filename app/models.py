@@ -14,6 +14,7 @@ class Book(db.Model):
     title = db.Column(db.String(120), index=True)
     authors = db.relationship(
         'Author', secondary=author_book, backref='authors')
+    description = db.Column(db.Text)
 
     def __repr__(self):
         return '<Book: {}>'.format(self.title)

@@ -1,8 +1,8 @@
 from flask import render_template, flash, redirect, url_for, g, session, request
 from flask.ext.login import login_user, logout_user, current_user
 from app import app, lm, db
-from .forms import LoginForm, RegisterForm
-from .models import User
+from .forms import LoginForm, RegisterForm, BookForm
+from .models import User, Book, Author
 
 
 @app.route('/')
@@ -89,3 +89,25 @@ def load_user(id):
 def before_request():
     g.user = current_user
 
+@app.route('/book_add', methods=['GET', 'POST'])
+def book_add():
+    form = BookForm()
+    if request.method == 'GET' or not form.validate_on_submit():
+        return render_template('book_edit.html', form=form)
+
+    title = request.form['title']
+    description = request.form['description']
+    author_name = request.form['author']
+
+    author = Author.query.filter_by(name=author_name).first()
+
+    if not author:
+        author = Author(name=author_name)
+
+    book = Book(title=title, authors=[author], description=description)
+
+    db.session.add(book)
+    db.session.commit()
+
+    flash('Book added successfully', 'success')
+    return redirect(url_for('index'))
