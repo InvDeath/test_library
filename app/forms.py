@@ -19,3 +19,7 @@ class BookForm(Form):
 	title = StringField('title', validators=[DataRequired()])
 	description = TextAreaField('description', validators=[DataRequired()])
 	author = StringField('author', validators=[DataRequired()])
+
+class AuthorForm(Form):
+	name = StringField('name', validators=[DataRequired()])
+	
