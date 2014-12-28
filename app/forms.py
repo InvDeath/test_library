@@ -1,5 +1,5 @@
 from flask.ext.wtf import Form
-from wtforms import StringField, BooleanField, PasswordField, TextField
+from wtforms import StringField, BooleanField, PasswordField, TextAreaField
 from wtforms.validators import DataRequired, Email, EqualTo
 
 
@@ -17,5 +17,5 @@ class RegisterForm(Form):
 
 class BookForm(Form):
 	title = StringField('title', validators=[DataRequired()])
-	description = TextField('description', validators=[DataRequired()])
+	description = TextAreaField('description', validators=[DataRequired()])
 	author = StringField('author', validators=[DataRequired()])

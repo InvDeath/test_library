@@ -1,5 +1,5 @@
 from flask import render_template, flash, redirect, url_for, g, session, request
-from flask.ext.login import login_user, logout_user, current_user
+from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, lm, db
 from .forms import LoginForm, RegisterForm, BookForm
 from .models import User, Book, Author
@@ -43,10 +43,11 @@ def login():
 
     login_user(registred_user)
     flash('You were signed in', 'success')
-    return redirect('/')
+    return redirect(url_for('index'))
 
 
 @app.route('/logout')
+@login_required
 def logout():
     logout_user()
     flash('You were logged out', 'info')
@@ -62,10 +63,11 @@ def before_request():
     g.user = current_user
 
 @app.route('/book_add', methods=['GET', 'POST'])
+@login_required
 def book_add():
     form = BookForm()
     if request.method == 'GET' or not form.validate_on_submit():
-        return render_template('book_edit.html', form=form)
+        return render_template('book_edit.html', form=form, action='Add')
 
     title = request.form['title']
     description = request.form['description']
@@ -82,4 +84,17 @@ def book_add():
     db.session.commit()
 
     flash('Book added successfully', 'success')
+    return redirect(url_for('index'))
+
+@app.route('/book_edit/<id>', methods=['GET', 'POST'])
+@login_required
+def book_edit(id):
+    book = Book.query.get_or_404(id)
+    form = BookForm(obj=book)
+    if request.method == 'GET' or not form.validate_on_submit():
+        return render_template('book_edit.html', form=form, action='Edit')
+
+    form.populate_obj(book)
+    db.session.commit()
+    flash('Book has been updated', 'success')
     return redirect(url_for('index'))
