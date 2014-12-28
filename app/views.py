@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, g, session, request
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, lm, db
-from .forms import LoginForm, RegisterForm, BookForm
+from .forms import LoginForm, RegisterForm, BookForm, AuthorForm
 from .models import User, Book, Author
 
 
@@ -105,6 +105,36 @@ def book_delete(id):
     book = Book.query.get_or_404(id)
     db.session.delete(book)
     db.session.commit()
+
     flash('Book has been deleted', 'success')
+    return redirect(url_for('index'))
+
+@app.route('/author_add', methods=['GET', 'POST'])
+@login_required
+def author_add():
+    form = AuthorForm()
+    if request.method == 'GET' or not form.validate_on_submit():
+        return render_template('author_edit.html', form=form, action='Add')
+    name = request.form['name']
+
+    author = Author(name=name)
+
+    db.session.add(author)
+    db.session.commit()
+
+    flash('Author added successfully', 'success')
+    return redirect(url_for('index'))
+
+@app.route('/author_edit/<id>', methods=['GET', 'POST'])
+@login_required
+def author_edit(id):
+    author = Author.query.get_or_404(id)
+    form = AuthorForm(obj=author)
+    if request.method == 'GET' or not form.validate_on_submit():
+        return render_template('author_edit.html', form=form, action='Edit')
+
+    form.populate_obj(author)
+    db.session.commit()
+    flash('Author has been updated', 'success')
     return redirect(url_for('index'))
 
