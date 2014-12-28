@@ -24,7 +24,10 @@ class appTestCase(unittest.TestCase):
 		db.session.commit()
 
 	def create_book(self):
-		return self.test_add_book()
+		self.app.post('/book_add', data=dict(
+			title='New Book',
+			author='auth1',
+			description='Nice book!'), follow_redirects=True)
 
 	def login(self, username, password):
 		return self.app.post('/login', data=dict(
@@ -80,7 +83,6 @@ class appTestCase(unittest.TestCase):
 		self.create_user()
 		self.login('admin', 'admin')
 		self.create_book()
-		self.login('admin', 'admin') # fixme after creating method create_book()
 
 		rv = self.app.post('/book_edit/1', data=dict(
 			title='New Title',
@@ -89,10 +91,11 @@ class appTestCase(unittest.TestCase):
 		assert 'Book has been updated' in str(rv.data)
 
 	def test_user_can_delete_book(self):
+		self.create_user()
 		self.login('admin', 'admin')
-		rv = self.app.post('/delete_book', data=dict(
-			id=1), follow_redirects=True)
-		assert 'removed' in str(rv.data)
+		self.create_book()
+		rv = self.app.get('/book_delete/1', follow_redirects=True)
+		assert 'Book has been deleted' in str(rv.data)
 
 	def test_user_can_add_author(self):
 		self.login('admin', 'admin')

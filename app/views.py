@@ -98,3 +98,13 @@ def book_edit(id):
     db.session.commit()
     flash('Book has been updated', 'success')
     return redirect(url_for('index'))
+
+@app.route('/book_delete/<id>')
+@login_required
+def book_delete(id):
+    book = Book.query.get_or_404(id)
+    db.session.delete(book)
+    db.session.commit()
+    flash('Book has been deleted', 'success')
+    return redirect(url_for('index'))
+
