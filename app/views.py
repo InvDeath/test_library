@@ -1,41 +1,13 @@
 from flask import render_template, flash, redirect, url_for, g, session, request
-from flask.ext.login import login_user, logout_user, current_user
+from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, lm, db
-from .forms import LoginForm, RegisterForm
-from .models import User
+from .forms import LoginForm, RegisterForm, BookForm
+from .models import User, Book, Author
 
 
 @app.route('/')
 def index():
-    books = [
-        {
-            'title': 'book1',
-            'id': 1,
-            'author':
-            {
-                'id': 1,
-                'name': 'auth1'
-            }
-        },
-        {
-            'title': 'book2',
-            'id': 2,
-            'author':
-            {
-                'id': 1,
-                'name': 'auth1'
-            }
-        },
-        {
-            'title': 'book3',
-            'id': 3,
-            'author':
-            {
-                'id': 2,
-                'name': 'auth2'
-            }
-        },
-    ]
+    books = Book.query.all()
     return render_template('index.html', books=books)
 
 
@@ -71,10 +43,11 @@ def login():
 
     login_user(registred_user)
     flash('You were signed in', 'success')
-    return redirect('/')
+    return redirect(url_for('index'))
 
 
 @app.route('/logout')
+@login_required
 def logout():
     logout_user()
     flash('You were logged out', 'info')
@@ -88,4 +61,50 @@ def load_user(id):
 @app.before_request
 def before_request():
     g.user = current_user
+
+@app.route('/book_add', methods=['GET', 'POST'])
+@login_required
+def book_add():
+    form = BookForm()
+    if request.method == 'GET' or not form.validate_on_submit():
+        return render_template('book_edit.html', form=form, action='Add')
+
+    title = request.form['title']
+    description = request.form['description']
+    author_name = request.form['author']
+
+    author = Author.query.filter_by(name=author_name).first()
+
+    if not author:
+        author = Author(name=author_name)
+
+    book = Book(title=title, authors=[author], description=description)
+
+    db.session.add(book)
+    db.session.commit()
+
+    flash('Book added successfully', 'success')
+    return redirect(url_for('index'))
+
+@app.route('/book_edit/<id>', methods=['GET', 'POST'])
+@login_required
+def book_edit(id):
+    book = Book.query.get_or_404(id)
+    form = BookForm(obj=book)
+    if request.method == 'GET' or not form.validate_on_submit():
+        return render_template('book_edit.html', form=form, action='Edit')
+
+    form.populate_obj(book)
+    db.session.commit()
+    flash('Book has been updated', 'success')
+    return redirect(url_for('index'))
+
+@app.route('/book_delete/<id>')
+@login_required
+def book_delete(id):
+    book = Book.query.get_or_404(id)
+    db.session.delete(book)
+    db.session.commit()
+    flash('Book has been deleted', 'success')
+    return redirect(url_for('index'))
 

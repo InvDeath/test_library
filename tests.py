@@ -14,7 +14,6 @@ class appTestCase(unittest.TestCase):
 		self.app = app.test_client()
 		db.create_all()
 
-
 	def tearDown(self):
 		db.session.remove()
 		db.drop_all()
@@ -23,6 +22,12 @@ class appTestCase(unittest.TestCase):
 		user = User('admin', 'admin', 'admin@admin.com')
 		db.session.add(user)
 		db.session.commit()
+
+	def create_book(self):
+		self.app.post('/book_add', data=dict(
+			title='New Book',
+			author='auth1',
+			description='Nice book!'), follow_redirects=True)
 
 	def login(self, username, password):
 		return self.app.post('/login', data=dict(
@@ -59,30 +64,38 @@ class appTestCase(unittest.TestCase):
 		assert 'Incorrect login or password' in str(rv.data)
 
 	def test_add_book(self):
+		self.create_user()
 		self.login('admin', 'admin')
-		rv = self.app.post('/add_book', data=dict(
+
+		rv = self.app.post('/book_add', data=dict(
 			title='New Book',
-			author=1), follow_redirects=True)
-		assert 'New Book' in str(rv.data)
+			author='auth1',
+			description='Nice book!'), follow_redirects=True)
+		assert 'Book added successfully' in str(rv.data)
 		self.logout()
-		rv = self.app.post('/add_book', data=dict(
+		rv = self.app.post('/book_add', data=dict(
 			title='New Book',
-			author=1), follow_redirects=True)
-		assert 'Access denine' in str(rv.data)
+			author='some aouthor',
+			description='test'), follow_redirects=True)
+		assert 'Please log in to access this page.' in str(rv.data)
 
 	def test_user_can_edit_book(self):
+		self.create_user()
 		self.login('admin', 'admin')
-		rv = self.app.post('/update_book', data=dict(
-			id=1,
+		self.create_book()
+
+		rv = self.app.post('/book_edit/1', data=dict(
 			title='New Title',
+			description='some new text',
 			author=1), follow_redirects=True)
 		assert 'Book has been updated' in str(rv.data)
 
 	def test_user_can_delete_book(self):
+		self.create_user()
 		self.login('admin', 'admin')
-		rv = self.app.post('/delete_book', data=dict(
-			id=1), follow_redirects=True)
-		assert 'removed' in str(rv.data)
+		self.create_book()
+		rv = self.app.get('/book_delete/1', follow_redirects=True)
+		assert 'Book has been deleted' in str(rv.data)
 
 	def test_user_can_add_author(self):
 		self.login('admin', 'admin')
@@ -110,6 +123,9 @@ class appTestCase(unittest.TestCase):
 	def test_guest_can_find_the_book_by_author(self):
 		rv = self.app.get('/search?book=Name')
 		assert 'New Book' in str(rv.data)
+
+	def test_cant_edit_or_delete_unexisted_book(self):
+		pass
 
 if __name__ == '__main__':
 	unittest.main()
