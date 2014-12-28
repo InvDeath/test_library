@@ -138,3 +138,13 @@ def author_edit(id):
     flash('Author has been updated', 'success')
     return redirect(url_for('index'))
 
+@app.route('/author_delete/<id>')
+@login_required
+def author_delete(id):
+    author = Author.query.get_or_404(id)
+    db.session.delete(author)
+    db.session.commit()
+
+    flash('Author has been deleted', 'success')
+    return redirect(url_for('index'))
+    

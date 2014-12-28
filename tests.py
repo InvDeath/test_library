@@ -113,9 +113,9 @@ class appTestCase(unittest.TestCase):
 
 	def test_user_can_delete_author(self):
 		self.login('admin', 'admin')
-		rv = self.app.post('/delete_author', data=dict(
-			id=1), follow_redirects=True)
-		assert 'removed' in str(rv.data)
+		self.create_author()
+		rv = self.app.get('/author_delete/1', follow_redirects=True)
+		assert 'Author has been deleted' in str(rv.data)
 
 	def test_guest_can_find_the_book_by_title(self):
 		rv = self.app.get('/search?book=Book')
