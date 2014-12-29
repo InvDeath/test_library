@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, g, session, request
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, lm, db
-from .forms import LoginForm, RegisterForm, BookForm, AuthorForm
+from .forms import LoginForm, RegisterForm, BookForm, AuthorForm, SearchForm
 from .models import User, Book, Author
 
 
@@ -61,6 +61,7 @@ def load_user(id):
 @app.before_request
 def before_request():
     g.user = current_user
+    g.search_form = SearchForm()
 
 @app.route('/book_add', methods=['GET', 'POST'])
 @login_required
@@ -147,4 +148,15 @@ def author_delete(id):
 
     flash('Author has been deleted', 'success')
     return redirect(url_for('index'))
-    
+
+@app.route('/books')
+def books():
+    pass
+
+@app.route('/authors')
+def authors():
+    pass
+
+@app.route('/search_result')
+def search_result():
+    return 'search results'
