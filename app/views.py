@@ -151,11 +151,13 @@ def author_delete(id):
 
 @app.route('/books')
 def books():
-    pass
+    books = Book.query.all()
+    return render_template('books.html', books=books)
 
 @app.route('/authors')
 def authors():
-    pass
+    authors = Author.query.all()
+    return render_template('index.html', authors=authors)
 
 @app.route('/search_result')
 def search_result():
