@@ -92,6 +92,13 @@ class appTestCase(unittest.TestCase):
 			author=1), follow_redirects=True)
 		assert 'Book has been updated' in str(rv.data)
 
+	def test_there_are_authors_in_book_edit_form(self):
+		self.login('admin', 'admin')
+		self.create_book()
+
+		rv = self.app.get('/book_edit/1', follow_redirects=True)
+		assert 'auth1' in str(rv.data)
+
 	def test_user_can_delete_book(self):
 		self.login('admin', 'admin')
 		self.create_book()
