@@ -4,26 +4,33 @@
 <nav class="top-bar" data-topbar role="navigation">
     <ul class="title-area">
         <li class="name">
-            <h1><a href="/">Library</a></h1>
+            <h1><a href="{{ url_for('index') }}">Library</a></h1>
         </li>
     </ul>
     <section class="top-bar-section">
         <ul class="right">
-            <li>
-            	<a href="/">Home</a>
-            </li>
-            {% if not g.user.is_authenticated() %}
-            <li>
-            	<a href="/login">Login</a>
-            </li>
-            <li>
-            	<a href="/register">Registration</a>
-            </li>
-			{% else %}
-            <li>
-            	<a href="/logout">LogOut</a>
-            </li>
+			{% if g.user.is_authenticated() %}
+            <li><a href="{{ url_for('author_add') }}">Add Author</a></li>
+            <li><a href="{{ url_for('book_add') }}">Add Book</a></li>
+            <li class="divider"></li>
+            <li><a href="{{ url_for('logout') }}">LogOut</a></li>
+            {% else %}
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+            <li><a href="{{ url_for('register') }}">Registration</a></li>
             {% endif %}
+        </ul>
+        <ul class="left">
+            <li><a href="{{ url_for('books') }}">Books</a></li>
+            <li><a href="{{ url_for('authors') }}">Authors</a></li>
+            <li class="divider"></li>
+
+            <li class="has-form">
+                <form class="row collapse" method="post" action="{{ url_for('search_results') }}">
+                    <div class="small-9 columns">{{ g.search_form.hidden_tag() }}{{ g.search_form.search(size=20) }}</div>
+                    <div class="small-3 columns"><button class="alert button expand">Search</button></div>
+                </form>
+            </li>
+
         </ul>
     </section>
 </nav>

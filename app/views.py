@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, g, session, request
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, lm, db
-from .forms import LoginForm, RegisterForm, BookForm, AuthorForm
+from .forms import LoginForm, RegisterForm, BookForm, AuthorForm, SearchForm
 from .models import User, Book, Author
 
 
@@ -61,6 +61,7 @@ def load_user(id):
 @app.before_request
 def before_request():
     g.user = current_user
+    g.search_form = SearchForm()
 
 @app.route('/book_add', methods=['GET', 'POST'])
 @login_required
@@ -71,14 +72,19 @@ def book_add():
 
     title = request.form['title']
     description = request.form['description']
-    author_name = request.form['author']
+    author_names = [i.strip(', ') for i in request.form['author'].strip(', ').split(',')]
+    authors = []
 
-    author = Author.query.filter_by(name=author_name).first()
+    for author_name in author_names:
+        author = Author.query.filter_by(name=author_name).first()
 
-    if not author:
-        author = Author(name=author_name)
+        if not author:
+            author = Author(name=author_name)
+            db.session.add(author)
 
-    book = Book(title=title, authors=[author], description=description)
+        authors.append(author)
+
+    book = Book(title=title, authors=authors, description=description)
 
     db.session.add(book)
     db.session.commit()
@@ -90,11 +96,28 @@ def book_add():
 @login_required
 def book_edit(id):
     book = Book.query.get_or_404(id)
+    book.author = ', '.join([str(i) for i in book.authors])
+
     form = BookForm(obj=book)
     if request.method == 'GET' or not form.validate_on_submit():
         return render_template('book_edit.html', form=form, action='Edit')
 
     form.populate_obj(book)
+
+    author_names = [i.strip(', ') for i in request.form['author'].strip(', ').split(',')]
+    authors = []
+
+    for author_name in author_names:
+        author = Author.query.filter_by(name=author_name).first()
+
+        if not author:
+            author = Author(name=author_name)
+            db.session.add(author)
+
+        authors.append(author)
+
+    book.authors = authors
+
     db.session.commit()
     flash('Book has been updated', 'success')
     return redirect(url_for('index'))
@@ -147,4 +170,24 @@ def author_delete(id):
 
     flash('Author has been deleted', 'success')
     return redirect(url_for('index'))
-    
+
+@app.route('/books')
+def books():
+    books = Book.query.all()
+    return render_template('books.html', books=books)
+
+@app.route('/authors')
+def authors():
+    authors = Author.query.all()
+    return render_template('index.html', authors=authors)
+
+@app.route('/search_results', methods=['GET', 'POST'])
+def search_results():
+    form = SearchForm()
+    if request.method == 'GET' or not form.validate_on_submit():
+        return redirect(url_for('index'))
+    query = request.form['search']
+    books = Book.query.filter(Book.title.like(query)).all()
+    authors = Author.query.filter(Author.name.like(query)).all()
+
+    return render_template('search_results.html', books=books, authors=authors, query=query)

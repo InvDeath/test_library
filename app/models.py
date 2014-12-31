@@ -27,6 +27,9 @@ class Author(db.Model):
     def __repr__(self):
         return '<Author: {}>'.format(self.name)
 
+    def __str__(self):
+        return self.name
+
 
 class User(db.Model):
     __tablename__ = 'users'

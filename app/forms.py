@@ -23,3 +23,5 @@ class BookForm(Form):
 class AuthorForm(Form):
 	name = StringField('name', validators=[DataRequired()])
 	
+class SearchForm(Form):
+	search = StringField('search', validators=[DataRequired()])
