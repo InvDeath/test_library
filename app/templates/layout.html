@@ -25,7 +25,7 @@
             <li class="divider"></li>
 
             <li class="has-form">
-                <form class="row collapse" action="{{ url_for('search_result') }}">
+                <form class="row collapse" method="post" action="{{ url_for('search_results') }}">
                     <div class="small-9 columns">{{ g.search_form.hidden_tag() }}{{ g.search_form.search(size=20) }}</div>
                     <div class="small-3 columns"><button class="alert button expand">Search</button></div>
                 </form>

@@ -181,6 +181,13 @@ def authors():
     authors = Author.query.all()
     return render_template('index.html', authors=authors)
 
-@app.route('/search_result')
-def search_result():
-    return 'search results'
+@app.route('/search_results', methods=['GET', 'POST'])
+def search_results():
+    form = SearchForm()
+    if request.method == 'GET' or not form.validate_on_submit():
+        return redirect(url_for('index'))
+    query = request.form['search']
+    books = Book.query.filter(Book.title.like(query)).all()
+    authors = Author.query.filter(Author.name.like(query)).all()
+
+    return render_template('search_results.html', books=books, authors=authors, query=query)

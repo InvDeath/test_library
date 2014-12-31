@@ -125,7 +125,9 @@ class appTestCase(unittest.TestCase):
 		assert 'Author has been deleted' in str(rv.data)
 
 	def test_guest_can_find_the_book_by_title(self):
-		rv = self.app.get('/search?book=Book')
+		self.create_book()
+		rv = self.app.post('/search_results', data=dict(
+			search='New Book'), follow_redirects=True)
 		assert 'New Book' in str(rv.data)
 
 	def test_guest_can_find_the_book_by_author(self):
