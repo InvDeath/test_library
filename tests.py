@@ -25,10 +25,10 @@ class appTestCase(unittest.TestCase):
 		db.session.commit()
 
 	def create_book(self):
-		self.app.post('/book_add', data=dict(
-			title='New Book',
-			author='auth1',
-			description='Nice book!'), follow_redirects=True)
+		author = Author(name='auth name')
+		book = Book(title='New Book', authors=[author], description='some desc')
+		db.session.add(book)
+		db.session.commit()
 
 	def create_author(self):
 		author = Author(name='auth name')
@@ -97,7 +97,7 @@ class appTestCase(unittest.TestCase):
 		self.create_book()
 
 		rv = self.app.get('/book_edit/1', follow_redirects=True)
-		assert 'auth1' in str(rv.data)
+		assert 'auth name' in str(rv.data)
 
 	def test_user_can_delete_book(self):
 		self.login('admin', 'admin')
@@ -128,11 +128,13 @@ class appTestCase(unittest.TestCase):
 		self.create_book()
 		rv = self.app.post('/search_results', data=dict(
 			search='New Book'), follow_redirects=True)
-		assert 'New Book' in str(rv.data)
+		assert '>New Book</a>' in str(rv.data)
 
 	def test_guest_can_find_the_book_by_author(self):
-		rv = self.app.get('/search?book=Name')
-		assert 'New Book' in str(rv.data)
+		self.create_author()
+		rv = self.app.post('/search_results', data=dict(
+			search='auth name'), follow_redirects=True)
+		assert '>auth name</a>' in str(rv.data)
 
 if __name__ == '__main__':
 	unittest.main()
