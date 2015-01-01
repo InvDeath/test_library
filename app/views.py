@@ -179,7 +179,7 @@ def books():
 @app.route('/authors')
 def authors():
     authors = Author.query.all()
-    return render_template('index.html', authors=authors)
+    return render_template('authors.html', authors=authors)
 
 @app.route('/search_results', methods=['GET', 'POST'])
 def search_results():
@@ -191,3 +191,13 @@ def search_results():
     authors = Author.query.filter(Author.name.like(query)).all()
 
     return render_template('search_results.html', books=books, authors=authors, query=query)
+
+@app.route('/book/<id>', methods=['GET'])
+def book(id):
+    book = Book.query.get_or_404(id)
+    return render_template('book.html', book=book)
+
+@app.route('/author/<id>', methods=['GET'])
+def author(id):
+    author = Author.query.get_or_404(id)
+    return render_template('author.html', author=author)

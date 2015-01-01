@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="row">
+	<ul class="no-bullet">
+	{% for author in authors %}
+		<li>
+			<h3>
+			<a href="/author/{{ author.id }}">{{ author.name }}</a>
+			</h3> 
+			{% if g.user.is_authenticated() %}
+				[<a href="/author_edit/{{ author.id }}">Edit</a> | <a href="/author_delete/{{ author.id }}">Delete</a>]
+			{% endif %}
+		</li>
+	{% endfor %}
+	</ul>
+</div>
+{% endblock %}
