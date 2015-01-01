@@ -1,0 +1,29 @@
+{% extends 'layout.html' %} 
+
+{% block content %}
+
+<div class="row">
+    <h1>{{ action }} book</h1>
+
+    <form action="" method="post" name="register">
+        {{ form.hidden_tag() }}
+
+        <label>Title:</label>
+        {{ form.title(size=80) }}
+        {% for error in form.title.errors %}
+            <small class="error">{{ error }}</small>
+        {% endfor %}
+        <label>Author:</label>
+        {{ form.author(size=80) }}
+        {% for error in form.author.errors %}
+            <small class="error">{{ error }}</small>
+        {% endfor %}
+        <label>Description:</label>
+        {{ form.description() }}
+        {% for error in form.description.errors %}
+            <small class="error">{{ error }}</small>
+        {% endfor %}
+        <button class="submit">Submit</button>
+    </form>
+</div>
+{% endblock %}

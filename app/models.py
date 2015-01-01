@@ -14,6 +14,7 @@ class Book(db.Model):
     title = db.Column(db.String(120), index=True)
     authors = db.relationship(
         'Author', secondary=author_book, backref='authors')
+    description = db.Column(db.Text)
 
     def __repr__(self):
         return '<Book: {}>'.format(self.title)
@@ -25,6 +26,9 @@ class Author(db.Model):
 
     def __repr__(self):
         return '<Author: {}>'.format(self.name)
+
+    def __str__(self):
+        return self.name
 
 
 class User(db.Model):
@@ -44,7 +48,7 @@ class User(db.Model):
         return '<User: {}>'.format(self.name)
 
     def is_authenticated(self):
-        return False
+        return True
 
     def is_active(self):
         return True

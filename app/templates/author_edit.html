@@ -1,0 +1,19 @@
+{% extends 'layout.html' %} 
+
+{% block content %}
+
+<div class="row">
+    <h1>{{ action }} author</h1>
+
+    <form action="" method="post" name="register">
+        {{ form.hidden_tag() }}
+
+        <label>Name:</label>
+        {{ form.name(size=80) }}
+        {% for error in form.name.errors %}
+            <small class="error">{{ error }}</small>
+        {% endfor %}
+        <button class="submit">Submit</button>
+    </form>
+</div>
+{% endblock %}
