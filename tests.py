@@ -20,7 +20,7 @@ class appTestCase(unittest.TestCase):
 		db.drop_all()
 
 	def create_user(self):
-		user = User('admin', 'admin', 'admin@admin.com')
+		user = User(login='admin', password='admin', email='admin@admin.com')
 		db.session.add(user)
 		db.session.commit()
 

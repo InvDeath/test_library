@@ -39,11 +39,6 @@ class User(db.Model):
     password = db.Column(db.String(120))
     email = db.Column(db.String(120))
 
-    def __init__(self, login, password, email):
-        self.login = login
-        self.password = password
-        self.email = email
-
     def __repr__(self):
         return '<User: {}>'.format(self.name)
 
