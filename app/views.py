@@ -18,7 +18,7 @@ def register():
         return render_template('register.html', form=form)
 
     user = User(
-        request.form['login'], request.form['password'], request.form['email'])
+        login=request.form['login'], password=request.form['password'], email=request.form['email'])
     db.session.add(user)
     db.session.commit()
     flash('User sucsessfully registred', 'success')
