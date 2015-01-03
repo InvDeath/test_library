@@ -7,7 +7,6 @@ class LoginForm(Form):
     login = StringField('login', validators=[DataRequired()])
     password = PasswordField('password', validators=[DataRequired()])
 
-
 class RegisterForm(Form):
     login = StringField('login', validators=[DataRequired()])
     password = PasswordField('password', validators=[DataRequired()])
